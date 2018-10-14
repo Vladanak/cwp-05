@@ -1,6 +1,6 @@
 const http = require("http");
 const fs = require("fs");
-const log = require("./log.js")
+const log = require("./log.js");
 const readall = require("./readall.js");
 const read = require("./read.js");
 const updateArticle = require("./updatearticle.js");
