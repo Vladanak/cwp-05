@@ -1,9 +1,29 @@
-const http = require('http');
-
-const hostname = '127.0.0.1';
+const http = require("http");
+const fs = require("fs");
+const log = require("./log.js")
+const readall = require("./readall.js");
+const read = require("./read.js");
+const updateArticle = require("./updatearticle.js");
+const createArticle = require("./createarticle.js");
+const deleteArticle = require(".//deletearticle.js")
+const createComment = require("./createcomment");
+const deleteComment = require("./deletecomments");
+const f = require("fs").createWriteStream("log.txt");
+const articles = require("./article.json");
+const hostname = "localhost";
 const port = 3000;
 
-const handlers = { '/sum': sum };
+const handlers =
+    {
+    '/sum': sum,
+    '/api/articles/readall': readall.readAll,
+    '/api/articles/read': read.read,
+    '/api/articles/update': updateArticle.updateArticle,
+    '/api/articles/create': createArticle.createArticle,
+    '/api/articles/delete': deleteArticle.deleteArticle,
+    '/api/comments/create': createComment.createComment,
+    '/api/comments/delete': deleteComment.deleteComment
+    };
 
 const server = http.createServer((req, res) =>
 {
@@ -17,19 +37,26 @@ const server = http.createServer((req, res) =>
             {
                 res.statusCode = err.code;
                 res.setHeader('Content-Type', 'application/json');
-                res.end( JSON.stringify(err) );
+                res.end(JSON.stringify(err));
+                log.log(f, req.url, JSON.stringify(err));
                 return;
             }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.end( JSON.stringify(result) );
-        });
+            log.log(f, req.url, JSON.stringify(payload));
+            changeArticles();
+            res.end(JSON.stringify(result));
+        })
     });
 });
 
 server.listen(port, hostname, () => { console.log(`Server running at http://${hostname}:${port}/`); });
 
-function getHandler(url) { return handlers[url] || notFound; }
+function changeArticles()
+{
+    const file = fs.createWriteStream('article.json');
+    file.write(JSON.stringify(articles));
+}
 
 function sum(req, res, payload, cb)
 {
@@ -37,7 +64,9 @@ function sum(req, res, payload, cb)
     cb(null, result);
 }
 
-function notFound(req, res, payload, cb) { cb({ code: 404, message: 'Not found'}); }
+function getHandler(url) { return handlers[url] || notFound }
+
+function notFound(req, res, payload, cb) { cb({ code: 404, message: 'Not found' }); }
 
 function parseBodyJson(req, cb)
 {
@@ -48,7 +77,8 @@ function parseBodyJson(req, cb)
     }).on('end', function()
     {
         body = Buffer.concat(body).toString();
-        let params = JSON.parse(body);
+        let params;
+        if (body !== "") { params = JSON.parse(body); }
         cb(null, params);
     });
 }

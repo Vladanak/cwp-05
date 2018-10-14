@@ -1,6 +1,8 @@
-module.exports.valid = function(url, payload) {
+module.exports.valid = function(url, payload)
+{
     let res = false;
-    switch (url) {
+    switch (url)
+    {
         case '/api/articles/delete':
             if (payload.id != undefined)
                 res = true;
@@ -30,4 +32,4 @@ module.exports.valid = function(url, payload) {
             break;
     }
     return res;
-}
+};
