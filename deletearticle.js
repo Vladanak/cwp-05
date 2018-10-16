@@ -1,6 +1,6 @@
 const log = require("./log.js");
 const file = require("fs").createWriteStream("log.txt");
-let articles = require("./article.json");
+let articles = require("./articles.json");
 const valid = require("./valid.js");
 
 const ErrorObject = { code: 400, message: 'Invalid request' };

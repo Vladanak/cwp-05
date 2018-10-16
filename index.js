@@ -9,7 +9,7 @@ const deleteArticle = require(".//deletearticle.js");
 const createComment = require("./createcomment");
 const deleteComment = require("./deletecomments");
 const f = require("fs").createWriteStream("log.txt");
-const articles = require("./article.json");
+const articles = require("./articles.json");
 const hostname = "localhost";
 const port = 3000;
 
